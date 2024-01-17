@@ -3,6 +3,7 @@ package jpabook.jpashop.web;
 import jakarta.validation.Valid;
 import jpabook.jpashop.domain.Address;
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.dto.MemberForm;
 import jpabook.jpashop.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,8 @@ public class MemberController {
 
         Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
         Member member = new Member();
+        member.setLoginId(form.getLoginId());
+        member.setPassword(form.getPassword());
         member.setName(form.getName());
         member.setAddress(address);
 

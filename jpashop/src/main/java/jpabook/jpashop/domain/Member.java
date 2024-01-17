@@ -17,6 +17,10 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    private String loginId;
+
+    private String password;
+
     private String name;
 
     @Embedded  //내장 타입 (DB 저장할 때는 다 풀어서 저장됨)

@@ -12,6 +12,7 @@
             <thead>
             <tr>
                 <th>#</th>
+                <th>아이디</th>
                 <th>이름</th>
                 <th>도시</th>
                 <th>주소</th>
@@ -21,6 +22,7 @@
             <tbody>
             <tr th:each="member : ${members}">
                 <td th:text="${member.id}"></td>
+                <td th:text="${member.loginId}"></td>
                 <td th:text="${member.name}"></td>
                 <td th:text="${member.address?.city}"></td>
                 <td th:text="${member.address?.street}"></td>
