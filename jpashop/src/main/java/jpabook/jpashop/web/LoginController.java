@@ -29,7 +29,7 @@ public class LoginController {
     @GetMapping("/login")
     public String loginForm(Model model) {
         model.addAttribute("loginForm", new LoginForm());
-        return "login/createLoginForm";
+        return "login/loginForm";
     }
 
     @PostMapping("/login")
@@ -37,14 +37,14 @@ public class LoginController {
                         HttpServletRequest request) {
 
         if (result.hasErrors()) {
-            return "login/createLoginForm";
+            return "login/loginForm";
         }
 
         Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
 
         if (loginMember == null) {
             result.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "login/createLoginForm";
+            return "login/loginForm";
         }
 
         //로그인 성공 처리 TODO
