@@ -1,60 +1,89 @@
 package jpabook.jpashop;
 
 import jakarta.annotation.PostConstruct;
-import jpabook.jpashop.domain.Address;
-import jpabook.jpashop.domain.Member;
+import jakarta.persistence.EntityManager;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.item.Book;
-import jpabook.jpashop.repository.ItemRepository;
-import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.service.ItemService;
 import jpabook.jpashop.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 public class TestDataInit {
 
-    private final MemberService memberService;
-    private final ItemService itemService;
+    private final InitService initService;
 
-    /**
-     * 테스트용 데이터 추가
-     */
-    @PostConstruct
+    @PostConstruct  //transaction이 잘 안먹혀서 별도의 클래스 생성
     public void init() {
-
-        Member member1 = new Member();
-        Address address1 = new Address("A1", "B2", "C3");
-        member1.setLoginId("user1");
-        member1.setPassword("1234");
-        member1.setName("James");
-        member1.setAddress(address1);
-        memberService.join(member1);
-
-        Member member2 = new Member();
-        Address address2 = new Address("C1", "D2", "E3");
-        member2.setLoginId("user2");
-        member2.setPassword("1234");
-        member2.setName("Kevin");
-        member2.setAddress(address1);
-        memberService.join(member2);
-
-        Book book1 = new Book();
-        book1.setName("book1");
-        book1.setPrice(12000);
-        book1.setStockQuantity(2);
-        book1.setAuthor("Ronaldo");
-        book1.setIsbn("123");
-        itemService.saveItem(book1);
-
-        Book book2 = new Book();
-        book2.setName("book2");
-        book2.setPrice(14000);
-        book2.setStockQuantity(5);
-        book2.setAuthor("Messi");
-        book2.setIsbn("456");
-        itemService.saveItem(book2);
+        initService.dbInit1();
+        initService.dbInit2();
     }
 
+    @Component
+    @Transactional
+    @RequiredArgsConstructor
+    static class InitService {
+
+        private final EntityManager em;
+
+        public void dbInit1() {
+            Member member = createMember("user1", "1234", "userA", "서울", "1", "1111");
+            em.persist(member);
+
+            Book book1 = createBook("JPA1 BOOK", 10000, 100);
+            em.persist(book1);
+
+            Book book2 = createBook("JPA2 BOOK", 20000, 100);
+            em.persist(book2);
+
+            OrderItem orderItem1 = OrderItem.createOrderItem(book1, 10000, 1);
+            OrderItem orderItem2 = OrderItem.createOrderItem(book2, 20000, 2);
+
+            Order order = Order.createOrder(member, createDelivery(member), orderItem1, orderItem2);
+            em.persist(order);
+        }
+
+        public void dbInit2() {
+            Member member = createMember("user2", "1234", "userB", "진주", "2", "2222");
+            em.persist(member);
+
+            Book book1 = createBook("SPRING1 BOOK", 20000, 200);
+            em.persist(book1);
+
+            Book book2 = createBook("SPRING2 BOOK", 40000, 300);
+            em.persist(book2);
+
+            OrderItem orderItem1 = OrderItem.createOrderItem(book1, 20000, 3);
+            OrderItem orderItem2 = OrderItem.createOrderItem(book2, 40000, 4);
+
+            Order order = Order.createOrder(member, createDelivery(member), orderItem1, orderItem2);
+            em.persist(order);
+        }
+
+        private Member createMember(String loginId, String password, String name, String city, String street, String zipcode) {
+            Member member = new Member();
+            member.setLoginId(loginId);
+            member.setPassword(password);
+            member.setName(name);
+            member.setAddress(new Address(city, street, zipcode));
+            return member;
+        }
+
+        private Book createBook(String name, int price, int stockQuantity) {
+            Book book = new Book();
+            book.setName(name);
+            book.setPrice(price);
+            book.setStockQuantity(stockQuantity);
+            return book;
+        }
+
+        private Delivery createDelivery(Member member) {
+            Delivery delivery = new Delivery();
+            delivery.setAddress(member.getAddress());
+            return delivery;
+        }
+    }
 }
