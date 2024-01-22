@@ -15,8 +15,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         if (session == null || session.getAttribute("loginMember") == null) {
             //로그인으로 redirect
-//            response.sendRedirect("/login?redirectURL=" + requestURI);
-            response.sendRedirect("/login");
+            response.sendRedirect("/login?redirectURL=" + requestURI);
             return false;
         }
 

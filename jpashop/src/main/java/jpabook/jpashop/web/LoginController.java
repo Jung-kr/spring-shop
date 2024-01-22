@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,6 +35,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@Valid LoginForm form, BindingResult result,
+                        @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request) {
 
         if (result.hasErrors()) {
@@ -54,7 +56,7 @@ public class LoginController {
         //세션에 로그인 회원 정보 보관
         session.setAttribute("loginMember", loginMember);
 
-        return "redirect:/";
+        return "redirect:" + redirectURL;
     }
 
     @PostMapping("/logout")

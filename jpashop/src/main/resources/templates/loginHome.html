@@ -15,8 +15,14 @@
         <p class="lead">회원 기능</p>
         <p>
             <a class="btn btn-lg btn-secondary" href="/members">회원 목록</a>
-            <a class="btn btn-lg btn-secondary" th:href="@{/logout}" th:action="@{/logout}"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">로그아웃</a>
+        </p>
+        <p class="lead">로그 아웃</p>
+        <p>
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-lg btn-secondary" type="submit">
+                    로그아웃
+                </button>
+            </form>
         </p>
         <p class="lead">상품 기능</p>
         <p>

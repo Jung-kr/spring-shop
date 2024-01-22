@@ -16,3 +16,10 @@ spring:
 logging.level:
   org.hibernate.SQL: debug  #logger를 통해 하이버네이트 실행 SQL을 남김
 #  org.hibernate.orm.jdbc.bind: trace  # SQL 실행 파라미터를 로그로 남기기 -> 라이브러리(gavlyukovskiy) 추가가 더 보기 편함
+
+#TrackingModes  URL 전달 방식을 끄고 항상 쿠키를 통해서만 세션을 유지하겠다
+server:
+  servlet:
+    session:
+      timeout: 60
+      tracking-modes: cookie
