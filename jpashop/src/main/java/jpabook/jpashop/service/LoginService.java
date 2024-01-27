@@ -19,11 +19,13 @@ public class LoginService {
     public Member login(String loginId, String password) {
 
         List<Member> findMember = memberRepository.findByLoginId(loginId);
-        Member member = findMember.get(0);
-        if (member.getPassword().equals(password)) {
-            return member;
-        } else {
-            return null;
+
+        if (!findMember.isEmpty()) {
+            Member member = findMember.get(0);
+            if (member.getPassword().equals(password)) {
+                return member;
+            }
         }
+        return null;
     }
 }

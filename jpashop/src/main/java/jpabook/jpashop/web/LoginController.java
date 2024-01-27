@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid LoginForm form, BindingResult result,
+    public String login(@Validated @ModelAttribute LoginForm form, BindingResult result,
                         @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request) {
 
@@ -45,7 +46,7 @@ public class LoginController {
         Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
 
         if (loginMember == null) {
-            result.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+            result.reject("loginFail", "아이디 또는 비밀번호를 다시 입력해주세요.");
             return "login/loginForm";
         }
 
