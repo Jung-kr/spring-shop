@@ -4,6 +4,7 @@ import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderSearch;
 import jpabook.jpashop.domain.item.Item;
+import jpabook.jpashop.exception.NotEnoughStockException;
 import jpabook.jpashop.service.ItemService;
 import jpabook.jpashop.service.MemberService;
 import jpabook.jpashop.service.OrderService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -50,8 +52,14 @@ public class OrderController {
     @PostMapping("/order")
     public String order(@RequestParam("memberId") Long memberId,
                         @RequestParam("itemId") Long itemId,
-                        @RequestParam("count") int count) {
-        orderService.order(memberId, itemId, count);
+                        @RequestParam("count") int count, RedirectAttributes redirectAttributes) {
+        try {
+            orderService.order(memberId, itemId, count);
+        } catch (NotEnoughStockException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "재고가 부족합니다.");
+            return "redirect:/order";
+        }
+
         return "redirect:/orders";
     }
 
