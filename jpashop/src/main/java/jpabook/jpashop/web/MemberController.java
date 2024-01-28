@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class MemberController {
      * @return
      */
     @PostMapping("/members/new")
-    public String create(@Valid MemberForm form, BindingResult result) {
+    public String create(@Valid MemberForm form, BindingResult result, Model model) {
 
         if (result.hasErrors()) {
             return "members/createMemberForm";
@@ -53,7 +54,12 @@ public class MemberController {
         member.setName(form.getName());
         member.setAddress(address);
 
-        memberService.join(member);
+        try {
+            memberService.join(member);
+        } catch (IllegalStateException ex) {
+            model.addAttribute("errorMessage", "이미 존재하는 회원입니다. 아이디를 다시 입력해주세요");
+            return "members/createMemberForm";
+        }
 
         return "redirect:/";
     }
